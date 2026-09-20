@@ -1148,6 +1148,12 @@ OBS_MODULE_USE_DEFAULT_LOCALE("win_openxrmirror", "en-US")
 
 bool obs_module_load(void)
 {
+	static_assert(LIBOBS_API_MAJOR_VER >= 32, "Build with the supported OBS 32 SDK or newer");
+	if ((obs_get_version() >> 24) < 32) {
+		blog(LOG_ERROR, "OBS Studio 32 or newer is required; found %s. Update OBS to load the mirror sources.",
+		     obs_get_version_string());
+		return false;
+	}
 	blog(LOG_INFO, "plugin version %s (IPC diagnostics v%u)",
 	     kPluginVersion, obs_mirror_ipc::kDiagnosticsVersion);
 	blog(LOG_INFO, "OBS runtime %s, build API %u.%u.%u, source registration size %zu",

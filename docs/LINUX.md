@@ -8,7 +8,7 @@ does not connect to this Linux OBS source.
 
 ## Install
 
-Use a native OBS package (OBS 30 or later), a Vulkan driver, and a configured
+Use a native OBS package (OBS 32; older versions are unsupported), a Vulkan driver, and a configured
 OpenXR runtime such as Monado, WiVRn, or SteamVR. Extract the Linux x86_64
 release archive, close OBS and the OpenXR application, then run:
 
@@ -74,9 +74,14 @@ On Ubuntu 24.04:
 
 ```sh
 sudo apt-get install build-essential cmake libvulkan-dev mesa-vulkan-drivers \
-  vulkan-validationlayers libobs-dev libsimde-dev xvfb
+  vulkan-validationlayers libsimde-dev xvfb
+# Download the official OBS 32.2.2 Ubuntu package from obsproject/obs-studio:
+sudo apt-get install ./OBS-Studio-32.2.2-Ubuntu-24.04-x86_64.deb
+sudo ldconfig
 git submodule update --init external/OpenXR-SDK
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release \
+  -DOBS_INCLUDE_DIR=/usr/local/include/obs \
+  -DOBS_LIBRARY=/usr/local/lib/x86_64-linux-gnu/libobs.so
 cmake --build build --parallel
 VK_LAYER_VALIDATE_SYNC=1 VK_LOADER_LAYERS_DISABLE='~implicit~' \
   xvfb-run -a ctest --test-dir build --output-on-failure

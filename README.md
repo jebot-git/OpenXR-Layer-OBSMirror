@@ -35,6 +35,9 @@ The OpenXR layer template was based on
 
 ## Quick install
 
+Requires OBS Studio 32 (release builds are tested with 32.2.2). Older OBS
+versions are unsupported.
+
 1. Open the [latest GitHub release](https://github.com/jebot-git/OpenXR-Layer-OBSMirror/releases).
 2. Close OBS Studio and any running OpenXR application.
 3. Download and run the `OpenXR-OBSMirror-...-Setup.exe` installer.
@@ -82,17 +85,18 @@ msbuild .\OpenXR-Layer-OBSMirror.sln /m `
   /p:Configuration=Release /p:Platform=x64
 ```
 
-Windows releases use OBS 30.2.3 headers and libraries as the compatibility
-baseline, and test the resulting DLL with OBS 30.2.3 and 32.2.2. Building with
-newer headers can prevent registration on older OBS versions. For a release
-build, extract the official OBS 30.2.3 Windows ZIP and use matching source:
+OBS Studio 32 is the supported baseline on Windows and Linux. Older OBS
+versions are unsupported. Releases build and test against OBS 32.2.2, including
+loading the packaged Windows DLL and registering both capture sources. For a
+Windows release build, extract the official OBS 32.2.2 Windows ZIP and use
+matching source:
 
 ```powershell
-git clone --depth 1 --branch 30.2.3 `
-  https://github.com/obsproject/obs-studio.git C:\src\obs-studio-30.2.3
+git clone --depth 1 --branch 32.2.2 `
+  https://github.com/obsproject/obs-studio.git C:\src\obs-studio-32.2.2
 pwsh -File .\scripts\Build-OBSPlugin.ps1 `
-  -OBSSourcePath C:\src\obs-studio-30.2.3 `
-  -OBSInstallPath C:\build-deps\obs-studio-30.2.3
+  -OBSSourcePath C:\src\obs-studio-32.2.2 `
+  -OBSInstallPath C:\build-deps\obs-studio-32.2.2
 ```
 
 With OBS closed, install both freshly built components for the current user:
@@ -149,14 +153,14 @@ Build a self-contained x64 copy:
 pwsh -File .\scripts\Build-ControlCenter.ps1
 ```
 
-Build the native layer, OBS plugin using the 30.2.3 baseline, Control Center, installer,
+Build the native layer, OBS plugin using the 32.2.2 baseline, Control Center, installer,
 portable ZIP, and checksums in one reproducible command:
 
 ```powershell
 pwsh -File .\scripts\Build-Release.ps1 `
   -Version 0.4.0-beta.2 `
-  -OBSSourcePath C:\src\obs-studio-30.2.3 `
-  -OBSInstallPath C:\build-deps\obs-studio-30.2.3
+  -OBSSourcePath C:\src\obs-studio-32.2.2 `
+  -OBSInstallPath C:\build-deps\obs-studio-32.2.2
 ```
 
 Run `bin\x64\Release\ControlCenter\OBSMirror.ControlCenter.exe`. Overscan

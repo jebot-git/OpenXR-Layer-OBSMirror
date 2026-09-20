@@ -93,6 +93,12 @@ namespace {
 } // namespace
 
 bool obs_module_load(void) {
+    static_assert(LIBOBS_API_MAJOR_VER >= 32, "Build with the supported OBS 32 SDK or newer");
+    if ((obs_get_version() >> 24) < 32) {
+        blog(LOG_ERROR, "[OpenXR OBSMirror] OBS Studio 32 or newer is required; found %s. Update OBS to load the mirror source.",
+             obs_get_version_string());
+        return false;
+    }
     obs_source_info info{};
     info.id = "openxr_vulkan_mirror_linux";
     info.type = OBS_SOURCE_TYPE_INPUT;

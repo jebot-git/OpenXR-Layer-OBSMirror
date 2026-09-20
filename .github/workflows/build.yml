@@ -14,9 +14,14 @@ jobs:
         with:
           submodules: true
       - name: Install native build and test dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           sudo apt-get update
-          sudo apt-get install -y libobs-dev libvulkan-dev mesa-vulkan-drivers vulkan-validationlayers libsimde-dev xvfb
+          sudo apt-get install -y libvulkan-dev mesa-vulkan-drivers vulkan-validationlayers libsimde-dev xvfb
+          gh release download 32.2.2 --repo obsproject/obs-studio --pattern OBS-Studio-32.2.2-Ubuntu-24.04-x86_64.deb --dir "$RUNNER_TEMP"
+          sudo apt-get install -y "$RUNNER_TEMP/OBS-Studio-32.2.2-Ubuntu-24.04-x86_64.deb"
+          sudo ldconfig
           python3 - <<'PY'
           import glob, os
           drivers = glob.glob('/usr/share/vulkan/icd.d/lvp_icd*.json')
@@ -26,7 +31,7 @@ jobs:
           PY
       - name: Build Linux layer and OBS plugin
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DOBS_INCLUDE_DIR=/usr/local/include/obs -DOBS_LIBRARY=/usr/local/lib/x86_64-linux-gnu/libobs.so
           cmake --build build --parallel 4
       - name: Vulkan, OpenXR interception and OBS plugin tests
         env:
@@ -68,11 +73,11 @@ jobs:
           git clone --depth 1 --branch v1.3.290 https://github.com/KhronosGroup/Vulkan-Headers "$env:RUNNER_TEMP\vulkan"
           if ($LASTEXITCODE) { throw 'Vulkan headers checkout failed' }
           "VULKAN_SDK=$env:RUNNER_TEMP\vulkan" >> $env:GITHUB_ENV
-          git clone --depth 1 --branch 30.2.3 https://github.com/obsproject/obs-studio "$env:RUNNER_TEMP\obs-source"
+          git clone --depth 1 --branch 32.2.2 https://github.com/obsproject/obs-studio "$env:RUNNER_TEMP\obs-source"
           if ($LASTEXITCODE) { throw 'OBS checkout failed' }
-          gh release download 30.2.3 --repo obsproject/obs-studio --pattern OBS-Studio-30.2.3-Windows.zip --dir "$env:RUNNER_TEMP"
+          gh release download 32.2.2 --repo obsproject/obs-studio --pattern OBS-Studio-32.2.2-Windows-x64.zip --dir "$env:RUNNER_TEMP"
           if ($LASTEXITCODE) { throw 'OBS download failed' }
-          Expand-Archive "$env:RUNNER_TEMP\OBS-Studio-30.2.3-Windows.zip" "$env:RUNNER_TEMP\obs"
+          Expand-Archive "$env:RUNNER_TEMP\OBS-Studio-32.2.2-Windows-x64.zip" "$env:RUNNER_TEMP\obs"
           nuget restore .\OpenXR-Layer-OBSMirror.sln -Source https://api.nuget.org/v3/index.json
           if ($LASTEXITCODE) { throw 'NuGet restore failed' }
           if (!(Test-Path 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe')) {
@@ -83,17 +88,10 @@ jobs:
         shell: pwsh
         run: |
           .\scripts\Build-Release.ps1 -Version 0.4.0-beta.2 -FileVersion 0.4.0.2 -OBSSourcePath "$env:RUNNER_TEMP\obs-source" -OBSInstallPath "$env:RUNNER_TEMP\obs"
-      - name: Test packaged OBS sources on OBS 30.2.3 and 32.2.2
+      - name: Test packaged OBS sources on OBS 32.2.2
         shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download 32.2.2 --repo obsproject/obs-studio --pattern OBS-Studio-32.2.2-Windows-x64.zip --dir "$env:RUNNER_TEMP"
-          if ($LASTEXITCODE) { throw 'OBS 32 download failed' }
-          Expand-Archive "$env:RUNNER_TEMP\OBS-Studio-32.2.2-Windows-x64.zip" "$env:RUNNER_TEMP\obs32"
-          foreach ($runtime in @("$env:RUNNER_TEMP\obs", "$env:RUNNER_TEMP\obs32")) {
-            .\scripts\Test-OBSPlugin.ps1 -OBSInstallPath $runtime -PortablePackage artifacts\v0.4.0-beta.2\OpenXR-OBSMirror-0.4.0-beta.2-Portable.zip
-          }
+          .\scripts\Test-OBSPlugin.ps1 -OBSInstallPath "$env:RUNNER_TEMP\obs" -PortablePackage artifacts\v0.4.0-beta.2\OpenXR-OBSMirror-0.4.0-beta.2-Portable.zip
       - uses: actions/upload-artifact@v4
         with:
           name: windows-x64
