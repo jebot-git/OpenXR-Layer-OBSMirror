@@ -45,7 +45,11 @@ struct Fixture {
         for (auto& layer : layers)
             validationAvailable |= std::strcmp(layer.layerName, "VK_LAYER_KHRONOS_validation") == 0;
         const char* validationLayer = "VK_LAYER_KHRONOS_validation";
-        const char* debugExtension = VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+        const char* debugExtensions[] = {VK_EXT_DEBUG_UTILS_EXTENSION_NAME, VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME};
+        const VkValidationFeatureEnableEXT syncValidation = VK_VALIDATION_FEATURE_ENABLE_SYNCHRONIZATION_VALIDATION_EXT;
+        VkValidationFeaturesEXT validationFeatures{VK_STRUCTURE_TYPE_VALIDATION_FEATURES_EXT};
+        validationFeatures.enabledValidationFeatureCount = 1;
+        validationFeatures.pEnabledValidationFeatures = &syncValidation;
         VkApplicationInfo app{VK_STRUCTURE_TYPE_APPLICATION_INFO};
         app.apiVersion = VK_API_VERSION_1_0;
         VkInstanceCreateInfo create{VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO};
@@ -53,8 +57,9 @@ struct Fixture {
         if (validationAvailable) {
             create.enabledLayerCount = 1;
             create.ppEnabledLayerNames = &validationLayer;
-            create.enabledExtensionCount = 1;
-            create.ppEnabledExtensionNames = &debugExtension;
+            create.enabledExtensionCount = 2;
+            create.ppEnabledExtensionNames = debugExtensions;
+            create.pNext = &validationFeatures;
         }
         check(vkCreateInstance(&create, nullptr, &instance));
         if (validationAvailable) {

@@ -17,13 +17,19 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libobs-dev libvulkan-dev mesa-vulkan-drivers vulkan-validationlayers libsimde-dev xvfb
+          python3 - <<'PY'
+          import glob, os
+          drivers = glob.glob('/usr/share/vulkan/icd.d/lvp_icd*.json')
+          assert drivers, 'Mesa lavapipe ICD was not installed'
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write('VK_DRIVER_FILES=' + drivers[0] + '\n')
+          PY
       - name: Build Linux layer and OBS plugin
         run: |
           cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel 4
       - name: Vulkan, OpenXR interception and OBS plugin tests
         env:
-          VK_DRIVER_FILES: /usr/share/vulkan/icd.d/lvp_icd.x86_64.json
           VK_LAYER_VALIDATE_SYNC: '1'
           VK_LOADER_LAYERS_DISABLE: '~implicit~'
         run: xvfb-run -a ctest --test-dir build --output-on-failure -V
