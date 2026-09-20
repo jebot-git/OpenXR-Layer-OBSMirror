@@ -1,4 +1,7 @@
-# Vulkan capture
+# Vulkan capture (Windows)
+
+For native Linux builds, see [Linux capture](LINUX.md). The remainder of this
+page describes the Windows compositor path.
 
 The OpenXR layer accepts both `XR_KHR_vulkan_enable` and
 `XR_KHR_vulkan_enable2`. Their graphics bindings and swapchain image types are

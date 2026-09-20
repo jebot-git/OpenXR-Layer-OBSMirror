@@ -99,6 +99,8 @@ Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\INSTALL.md') `
     -Destination (Join-Path $payloadRoot 'docs') -Force
 Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\VULKAN.md') `
     -Destination (Join-Path $payloadRoot 'docs') -Force
+Copy-Item -LiteralPath (Join-Path $repoRoot 'docs\LINUX.md') `
+    -Destination (Join-Path $payloadRoot 'docs') -Force
 Copy-Item -LiteralPath (Join-Path $repoRoot "docs\release-notes\$tag.md") `
     -Destination (Join-Path $payloadRoot 'docs\release-notes') -Force
 

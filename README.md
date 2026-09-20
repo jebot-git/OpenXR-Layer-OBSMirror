@@ -1,5 +1,7 @@
 # OpenXR + OpenVR OBS Mirror
 
+This is the **jebot-git fork**, based on [Elliott Tate / Jabbah’s upstream project](https://github.com/elliotttate/OpenXR-Layer-OBSMirror). It adds Vulkan capture and experimental native Linux packages. See [Linux installation and limitations](docs/LINUX.md) and [Vulkan capture](docs/VULKAN.md).
+
 **Capture native OpenXR applications or the SteamVR/OpenVR compositor directly
 in OBS Studio. OpenXR capture can also use a wider, steadier recording camera
 while the headset continues to look and track normally.**
@@ -33,7 +35,7 @@ The OpenXR layer template was based on
 
 ## Quick install
 
-1. Open the [latest GitHub release](https://github.com/jebot-git/OpenXR-Layer-OBSMirror/releases/latest).
+1. Open the [latest GitHub release](https://github.com/jebot-git/OpenXR-Layer-OBSMirror/releases).
 2. Close OBS Studio and any running OpenXR application.
 3. Download and run the `OpenXR-OBSMirror-...-Setup.exe` installer.
 4. Open OBS Studio and add **VR Mirror Capture (Auto: OpenXR / SteamVR)**.
