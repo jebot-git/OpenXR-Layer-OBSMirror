@@ -108,6 +108,6 @@ bool obs_module_load(void) {
         obs_data_set_default_int(settings, "pid", 0);
     };
     obs_register_source(&info);
-    blog(LOG_INFO, "[OpenXR OBSMirror] Linux Vulkan plugin 0.4.0-beta.1 loaded");
+    blog(LOG_INFO, "[OpenXR OBSMirror] Linux Vulkan plugin 0.4.0-beta.2 loaded");
     return true;
 }

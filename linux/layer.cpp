@@ -88,7 +88,7 @@ namespace {
                                      binding->queueFamilyIndex,
                                      binding->queueIndex)) {
                 created->vulkan = std::move(dispatch);
-                std::fprintf(stderr, "[OBSMirror] Linux Vulkan capture active (0.4.0-beta.1)\n");
+                std::fprintf(stderr, "[OBSMirror] Linux Vulkan capture active (0.4.0-beta.2)\n");
             }
         }
         sessions.emplace(*session, std::move(created));

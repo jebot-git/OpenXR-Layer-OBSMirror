@@ -82,14 +82,17 @@ msbuild .\OpenXR-Layer-OBSMirror.sln /m `
   /p:Configuration=Release /p:Platform=x64
 ```
 
-The OBS plugin must be compiled against source matching the installed OBS
-version. For example, for OBS 32.2.1:
+Windows releases use OBS 30.2.3 headers and libraries as the compatibility
+baseline, and test the resulting DLL with OBS 30.2.3 and 32.2.2. Building with
+newer headers can prevent registration on older OBS versions. For a release
+build, extract the official OBS 30.2.3 Windows ZIP and use matching source:
 
 ```powershell
-git clone --depth 1 --branch 32.2.1 `
-  https://github.com/obsproject/obs-studio.git C:\src\obs-studio-32.2.1
+git clone --depth 1 --branch 30.2.3 `
+  https://github.com/obsproject/obs-studio.git C:\src\obs-studio-30.2.3
 pwsh -File .\scripts\Build-OBSPlugin.ps1 `
-  -OBSSourcePath C:\src\obs-studio-32.2.1
+  -OBSSourcePath C:\src\obs-studio-30.2.3 `
+  -OBSInstallPath C:\build-deps\obs-studio-30.2.3
 ```
 
 With OBS closed, install both freshly built components for the current user:
@@ -146,13 +149,14 @@ Build a self-contained x64 copy:
 pwsh -File .\scripts\Build-ControlCenter.ps1
 ```
 
-Build the native layer, matching OBS 32.2.1 source, Control Center, installer,
+Build the native layer, OBS plugin using the 30.2.3 baseline, Control Center, installer,
 portable ZIP, and checksums in one reproducible command:
 
 ```powershell
 pwsh -File .\scripts\Build-Release.ps1 `
-  -Version 0.3.0-beta.4 `
-  -OBSSourcePath E:\Github\obs-studio
+  -Version 0.4.0-beta.2 `
+  -OBSSourcePath C:\src\obs-studio-30.2.3 `
+  -OBSInstallPath C:\build-deps\obs-studio-30.2.3
 ```
 
 Run `bin\x64\Release\ControlCenter\OBSMirror.ControlCenter.exe`. Overscan
