@@ -1,6 +1,6 @@
 # Linux Vulkan capture (experimental)
 
-This fork ships a native Linux OpenXR API layer and an OBS input plugin. It
+The project ships a native Linux OpenXR API layer and an OBS input plugin. It
 supports native Linux Vulkan applications using either OpenXR Vulkan binding.
 It is not a Wine/Proton layer: Windows games running under Proton need a
 Windows OpenXR layer inside their Wine prefix, and the Windows D3D11 transport

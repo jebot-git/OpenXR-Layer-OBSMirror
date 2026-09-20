@@ -25,7 +25,7 @@ public sealed record AppUpdateInfo(
 public sealed class AppUpdateService
 {
     private const string ReleasesApiUrl =
-        "https://api.github.com/repos/jebot-git/OpenXR-Layer-OBSMirror/releases?per_page=15";
+        "https://api.github.com/repos/elliotttate/OpenXR-Layer-OBSMirror/releases?per_page=15";
     private const string InstallerSuffix = "-Setup.exe";
     private const string ChecksumsAssetName = "SHA256SUMS.txt";
 

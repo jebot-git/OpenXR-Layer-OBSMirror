@@ -2,6 +2,8 @@ name: Build release packages
 on:
   push:
     branches: [main, vulkan-support]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
