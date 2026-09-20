@@ -1,8 +1,8 @@
 #ifndef MyAppVersion
-  #define MyAppVersion "0.3.0-beta.14"
+  #define MyAppVersion "0.4.0-beta.1"
 #endif
 #ifndef MyFileVersion
-  #define MyFileVersion "0.3.0.14"
+  #define MyFileVersion "0.4.0.1"
 #endif
 #ifndef PayloadRoot
   #define PayloadRoot "..\artifacts\payload"
@@ -16,10 +16,10 @@ AppId={{8B49FA68-2786-4DCB-9A42-AC20AEF8208C}
 AppName=OpenXR OBS Mirror
 AppVersion={#MyAppVersion}
 AppVerName=OpenXR OBS Mirror {#MyAppVersion}
-AppPublisher=Elliott Tate
-AppPublisherURL=https://github.com/elliotttate/OpenXR-Layer-OBSMirror
-AppSupportURL=https://github.com/elliotttate/OpenXR-Layer-OBSMirror/issues
-AppUpdatesURL=https://github.com/elliotttate/OpenXR-Layer-OBSMirror/releases
+AppPublisher=jebot-git (fork of Elliott Tate / Jabbah)
+AppPublisherURL=https://github.com/jebot-git/OpenXR-Layer-OBSMirror
+AppSupportURL=https://github.com/jebot-git/OpenXR-Layer-OBSMirror/issues
+AppUpdatesURL=https://github.com/jebot-git/OpenXR-Layer-OBSMirror/releases
 DefaultDirName={autopf}\OpenXR OBS Mirror
 DefaultGroupName=OpenXR OBS Mirror
 DisableProgramGroupPage=yes
@@ -39,7 +39,7 @@ CloseApplications=yes
 RestartApplications=no
 VersionInfoVersion={#MyFileVersion}
 VersionInfoTextVersion={#MyAppVersion}
-VersionInfoCompany=Elliott Tate
+VersionInfoCompany=jebot-git
 VersionInfoDescription=OpenXR OBS Mirror Setup
 VersionInfoProductName=OpenXR OBS Mirror
 

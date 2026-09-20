@@ -1,0 +1,51 @@
+name: Build release packages
+on:
+  push:
+    branches: [main, vulkan-support]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - uses: microsoft/setup-msbuild@v2
+      - uses: NuGet/setup-nuget@v2
+      - name: Fetch pinned build dependencies
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git clone --depth 1 --branch v1.3.290 https://github.com/KhronosGroup/Vulkan-Headers "$env:RUNNER_TEMP\vulkan"
+          if ($LASTEXITCODE) { throw 'Vulkan headers checkout failed' }
+          "VULKAN_SDK=$env:RUNNER_TEMP\vulkan" >> $env:GITHUB_ENV
+          git clone --depth 1 --branch 32.2.2 https://github.com/obsproject/obs-studio "$env:RUNNER_TEMP\obs-source"
+          if ($LASTEXITCODE) { throw 'OBS checkout failed' }
+          gh release download 32.2.2 --repo obsproject/obs-studio --pattern OBS-Studio-32.2.2-Windows-x64.zip --dir "$env:RUNNER_TEMP"
+          if ($LASTEXITCODE) { throw 'OBS download failed' }
+          Expand-Archive "$env:RUNNER_TEMP\OBS-Studio-32.2.2-Windows-x64.zip" "$env:RUNNER_TEMP\obs"
+          nuget restore .\OpenXR-Layer-OBSMirror.sln -Source https://api.nuget.org/v3/index.json
+          if ($LASTEXITCODE) { throw 'NuGet restore failed' }
+          if (!(Test-Path 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe')) {
+            choco install innosetup --yes --no-progress
+            if ($LASTEXITCODE) { throw 'Inno Setup installation failed' }
+          }
+      - name: Build Windows layer, OBS plugin, Control Center and installer
+        shell: pwsh
+        run: |
+          .\scripts\Build-Release.ps1 -Version 0.4.0-beta.1 -FileVersion 0.4.0.1 -OBSSourcePath "$env:RUNNER_TEMP\obs-source" -OBSInstallPath "$env:RUNNER_TEMP\obs"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: artifacts/v0.4.0-beta.1/*
+          if-no-files-found: error
